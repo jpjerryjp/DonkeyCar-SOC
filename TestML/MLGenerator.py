@@ -4,8 +4,7 @@ from os import walk
 from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.preprocessing import normalize, StandardScaler
-#INPUT_DATA_DIR = "C://Users//jerry//Documents//UF//2024 Spring//EEL4924C-EE Design 2//SOC Estimation Code//TestML//TestMLCSV//"
-INPUT_DATA_DIR = "C://Users//jerry//Documents//UF//2024 Spring//EEL4924C-EE Design 2//SOC Estimation Code//TestML//TestSOCData//"
+INPUT_DATA_DIR = "C://Users//XXXX//Documents//UF//2024 Spring//EEL4924C-EE Design 2//SOC Estimation Code//TestML//TestSOCData//"
 
 files = []
 
