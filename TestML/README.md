@@ -1,4 +1,4 @@
-#Important
+# Important
 Some of these files work assuming that you have your data to train the model stored in CSV files in a directory stored in the python variable
 "INPUT_DATA_DIR" and you also have to change:
 
