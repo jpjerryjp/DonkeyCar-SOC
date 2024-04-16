@@ -27,25 +27,25 @@ def readvalues(): #Repeat this function every 1 second
 	volt = volt * converstion * volt_factor
 	volt = round(volt,2)
 
-	'''
+	
 	previous_SOC = SOC
 	SOC = beginning_SOC - count * SOC_factor
 	SOC = SOC / beginning_SOC * 100
 	SOC = round(SOC, 2)
-	'''
+	
 
-	row = np.array([[volt, curr, temp, previous_SOC]])
+	row = np.array([[volt, curr, temp, previous_SOC, SOC, InReg, wcount]])
 
 	prediction = model.predict(row)
 	actualpred = y_fit.inverse_transform(prediction)
 
-	print(f"V = {str(volt)}, I = {str(curr)}, T = {str(temp)}, Previous SOC = {str(previous_SOC)}%, predicted SOC = {str(actualpred)}%\n")
+	print(f"V = {str(volt)}, I = {str(curr)}, T = {str(temp)}, SOC = {str(actualpred)}%\n, W should be {np.round(actualpred, 0)}")
 
-'''
+
 def callback_fn(tmp): #This function will be called when the CC_channel Pin dorps low(0V)
 	global count
 	count = count + 1 
-'''
+
 
 
 #SPI INITIALIZATION---------------------------------------------------------------------------------------------
@@ -73,13 +73,13 @@ curr_factor = 1/(50*0.0025)
 Timer1 = CT.CustomTimer(2, readvalues) #Initializes a timer that repeats a function every 1 second while letting the rest of the code run
 
 
-'''
+
 #INTERRUPT INITIALIZATION---------------------------------------------------------------------------------------------
 GPIO.setmode(GPIO.BOARD) #Corresponds to the nano pinout numbers on the physical board 
 CC_channel = 12 #Set Pin 12 to be the channel connecting to CC
 GPIO.setup(CC_channel, GPIO.IN) 
 count = 0 #This variable will be incremented everytime the CC_channel goes low
-'''
+
 beginning_SOC = 1200
 SOC = 0
 previous_SOC = SOC
@@ -92,16 +92,20 @@ model = load_model('SOC_NN_Model.keras')
 x_fit = load(x_fit_obj.bin)
 y_fit = load(y_fit_obj.bin)
 
+print("Enter any key to start!\nOnce started, enter 'q' to end code.")
+input()
 print("Starting")
-
+InReg = 1
 #Start Timer
 Timer1.start()
 
+
 while(True):
-	if input() == "q":
+	temp = input()
+	if temp == "q":
 		print("Exited")
 		Timer1.stop()
 		time.sleep(1)
 		spi.close()
-		#GPIO.cleanup()
+		GPIO.cleanup()
 		break
