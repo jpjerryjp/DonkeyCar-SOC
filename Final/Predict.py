@@ -70,7 +70,7 @@ converstion = 3.3/4096
 volt_factor = (67.8 + 32.9)/32.9
 curr_factor = 1/(50*0.0025)
 
-Timer1 = CT.CustomTimer(2, readvalues) #Initializes a timer that repeats a function every 1 second while letting the rest of the code run
+Timer1 = CT.CustomTimer(1, readvalues) #Initializes a timer that repeats a function every 1 second while letting the rest of the code run
 
 
 
