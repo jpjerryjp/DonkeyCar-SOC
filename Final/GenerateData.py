@@ -35,15 +35,14 @@ def readvalues(): #Repeat this function every 1 second
 	SOC = SOC / beginning_SOC * 100
 	SOC = round(SOC, 2)
 
-	row = [volt, curr, temp, previous_SOC, SOC]
+	row = [volt, curr, temp, previous_SOC, SOC, InReg, wcount]
 	
 	with open(filename, 'a', newline='') as csvfile:
     		csvwriter = csv.writer(csvfile)
     		# writing the data rows
     		csvwriter.writerow(row)
 
-	print("V = " + str(volt) + ", I = " + str(curr) + ", T = " + str(temp) + ", Previous SOC = " + str(previous_SOC) + "%, Measured SOC = " + str(SOC) + "%")
-
+	print(f"V = {str(volt)}, I = {str(curr)}, T = {str(temp)}, Previous SOC = {str(previous_SOC)}%, Measured SOC = {str(SOC)}%, w = {str(wcount)}\n")
 
 def callback_fn(tmp): #This function will be called when the CC_channel Pin dorps low(0V)
 	global count
@@ -57,7 +56,7 @@ curTime = time.strftime("%m_%d_%y_%H_%M", time.localtime()) #Create current time
 filename = "SOC_Data_" + curTime + ".csv" # name of csv file SOC_Data_month_day_year_hour_minute
 print("Filename is: " + filename)
 
-fields = ['Voltage(V)', 'Current(A)', 'Temperature(C)', 'Previous SOC(%)', 'SOC(%)'] # field names
+fields = ['Voltage(V)', 'Current(A)', 'Temperature(C)', 'Previous SOC(%)', 'SOC(%)', 'InReg', 'wcount', ] # field names
 
 with open(filename, 'w', newline='') as csvfile:
     # creating a csv writer object
@@ -99,21 +98,30 @@ CC_channel = 12 #Set Pin 12 to be the channel connecting to CC
 GPIO.setup(CC_channel, GPIO.IN) 
 count = 0 #This variable will be incremented everytime the CC_channel goes low
 beginning_SOC = 1200
-SOC = 0
-previous_SOC = SOC
+SOC = 100
+previous_SOC = 100
 SOC_factor = 1.707
 
 GPIO.add_event_detect(CC_channel, GPIO.FALLING, callback=callback_fn)
 
-
+wcount = 0
+InReg = 0
 #Start Timer
 Timer1.start()
 
+
 while(True):
-	if input() == "q":
+	temp = input()
+	if temp == "q":
 		print("Exited")
 		Timer1.stop()
 		time.sleep(1)
 		spi.close()
 		GPIO.cleanup()
 		break
+	elif temp == "w":
+		InReg = 1
+		wcount = wcount + 1
+	elif temp == "s":
+		InReg = 1
+		wcount = wcount - 1
