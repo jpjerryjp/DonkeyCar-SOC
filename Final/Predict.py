@@ -4,9 +4,8 @@ import numpy as np
 import spidev #Allows SPI
 import Jetson.GPIO as GPIO #Allows interrupts and GPIO functions
 import CustomTimer as CT #A custom made timer adjusted from Python Assets in "Executing Code Every Certain Time". You define a function that you want to be repeated, and then create a CustomTimer object with the input CustomTimer(interval speed in seconds, function to be repeated).You must have the file CustomTimer in the same depository as the file youre calling it from.
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.saving import load_model
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense
 from joblib import dump, load
 
 def readvalues(): #Repeat this function every 1 second
@@ -34,7 +33,7 @@ def readvalues(): #Repeat this function every 1 second
 	SOC = round(SOC, 2)
 	
 
-	row = np.array([[volt, curr, temp, previous_SOC, SOC, InReg, wcount]])
+	row = np.array([[volt, curr, temp, InReg, SOC]])
 
 	prediction = model.predict(row)
 	actualpred = y_fit.inverse_transform(prediction)
@@ -88,7 +87,7 @@ SOC_factor = 1.707
 #GPIO.add_event_detect(CC_channel, GPIO.FALLING, callback=callback_fn)
 
 #NN INITIALIZATION
-model = load_model('SOC_NN_Model.keras')
+model = new_model = load_model('SOC_NN_Model.keras')
 x_fit = load(x_fit_obj.bin)
 y_fit = load(y_fit_obj.bin)
 
